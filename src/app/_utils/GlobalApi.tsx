@@ -425,6 +425,40 @@ const getUserOrders = async (email: string) => {
   }
 }
 
+const searchBusiness = async (search:string) => {
+  if (!MASTER_URL) {
+    throw new Error('La variable de entorno no está definida');
+  }
+
+  const query = gql`
+  query searchRestaurante {
+    restaurantes(where: {name_contains: "`+search+`"}) {
+      id
+      banner {
+        url
+      }
+      name
+      slug
+      reviews {
+        star
+      }
+      restoType
+      categories {
+        name
+      }
+      workingHours
+    }
+  }
+  `
+  try {
+    const result = await request(MASTER_URL, query);
+    return result;
+  } catch (error) {
+    console.error("Error searching restaurantes", error);
+    throw error;
+  }
+}
+
 export default {
   getCategory,
   getBusiness,
@@ -438,7 +472,8 @@ export default {
   createOrder,
   updateOrder,
   emptyUserCart,
-  getUserOrders
+  getUserOrders,
+  searchBusiness
 }
 
 

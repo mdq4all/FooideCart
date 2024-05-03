@@ -61,14 +61,14 @@ const CategoryList = () => {
                     <Link
                         href={`?category=${category.slug}`}
                         key={category.id}
-                        className={`flex flex-col items-center py-2 md:px-8 rounded-lg bg-orange-300 border border-primary min-w-28 hover:bg-primary cursor-pointer group shadow-lg ${selectedCategory === category.slug && 'bg-primary border border-secondary'}`}>
+                        className={`flex flex-col items-center w-36 py-2 md:px-8 rounded-lg bg-orange-300 border border-primary min-w-28 hover:bg-primary cursor-pointer group shadow-lg ${selectedCategory === category.slug && 'bg-primary border border-secondary'}`}>
                         <Image
                             src={category.icon.url}
                             alt={category.name}
                             width={40}
                             height={40}
                             className="h-8 w-8 md:h-12 md:w-12 group-hover:scale-110 duration-200" />
-                        <h2 className="text-sm md:text-lg text-white font-bold text-nowrap group-hover:text-orange-300 capitalize">{category.name}</h2>
+                        <h2 className="text-sm md:text-lg text-white font-bold text-nowrap group-hover:text-orange-300 capitalize">{category.name.replace(/_/, ' ')}</h2>
                     </Link>
                 ))}
             </div>

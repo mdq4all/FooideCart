@@ -20,11 +20,10 @@ type ApiOrderResponse = {
   }
 }
 
-
 const CkeckoutPage = () => {
 
   const params = useSearchParams()
-  const { user } = useUser()
+  const { user, isSignedIn, isLoaded } = useUser()
   const [cart, setCart] = useState<Cart[] | null>(null);
   const [subtotal, setSubtotal] = useState(0);
   const [deliveryAmount, setDeliveryAmount] = useState(5);
@@ -43,6 +42,12 @@ const CkeckoutPage = () => {
   useEffect(() => {
     user && getUserCarts()
   }, [user, updateCart]);
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      router.push('/sign-in')
+    }
+  }, [isSignedIn]);
 
   const addToOrder = async () => {
 
@@ -127,7 +132,7 @@ const CkeckoutPage = () => {
     }
   }
 
-  return (
+  return (isSignedIn &&
     <div className="p-4">
       <h2 className="font-bold text-2xl my-5">Checkout</h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-10">

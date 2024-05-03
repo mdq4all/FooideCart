@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
+import { SignInButton, SignOutButton, SignUpButton, useUser } from "@clerk/nextjs"
 import { Search, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import { CartUpdateContext, CartUpdateContextType } from "../_context/cartUpdateContext"
@@ -23,6 +23,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 
 
@@ -36,6 +37,8 @@ const Header = () => {
 
     const { user, isSignedIn } = useUser()
     const [cart, setCart] = useState<Cart[] | null>(null);
+    const [search, setSearch] = useState('');
+    const router = useRouter()
 
     const { updateCart, setUpdateCart } = useContext<CartUpdateContextType>(CartUpdateContext)
 
@@ -50,6 +53,10 @@ const Header = () => {
                 setCart(apiResponse.userCarts)
             })
         }
+    }
+    const initSearch = () => {
+        setSearch('')
+        router.push(`/search/?query=${search}`)
     }
 
     return (
@@ -67,8 +74,18 @@ const Header = () => {
                 <h2 className="text-primary font-bold text-xl">Foodie <span className="text-secondary">Cart</span></h2>
             </div>
             <div className="hidden md:flex items-center bg-slate-300 rounded-lg w-96 py-2 px-4 h-10">
-                <input type="search" className="bg-transparent w-full outline-none" />
-                <Search color="#E26612" />
+                <input
+                    type="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="restaurante..."
+                    className="bg-transparent w-full outline-none placeholder:italic" />
+                <button
+                    className="outline-primary rounded-full p-1 active:animate-bounce duration-200 disabled:pointer-events-none"
+                    onClick={initSearch}
+                    disabled={!search}>
+                    <Search color="#E26612" />
+                </button>
             </div>
             {isSignedIn ? (
                 <div className="flex items-center gap-4">
@@ -106,9 +123,11 @@ const Header = () => {
                             <Link href="/user#/my-orders">
                                 <DropdownMenuItem>My Orders</DropdownMenuItem>
                             </Link>
-                            <SignOutButton>
-                                <DropdownMenuItem>Logout</DropdownMenuItem>
-                            </SignOutButton>
+                            <DropdownMenuItem>
+                                <SignOutButton>
+                                    Logout
+                                </SignOutButton>
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

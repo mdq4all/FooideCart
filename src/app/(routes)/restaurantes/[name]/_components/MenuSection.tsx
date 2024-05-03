@@ -2,7 +2,7 @@ import { CartUpdateContext, CartUpdateContextType } from "@/app/_context/cartUpd
 import GlobalApi from "@/app/_utils/GlobalApi"
 import { Button } from "@/components/ui/button"
 import { Business, MenuItem, UserCart } from "@/types"
-import { useUser } from "@clerk/nextjs"
+import { SignInButton, useUser } from "@clerk/nextjs"
 import { SquarePlus } from "lucide-react"
 import Image from "next/image"
 import { useContext, useEffect, useState } from "react"
@@ -16,7 +16,7 @@ const MenuSection = ({ restaurante }: {
 
   const [menuItemList, setMenuItemList] = useState<MenuItem | null>(null);
 
-  const { user } = useUser()
+  const { user, isSignedIn } = useUser()
 
   const { updateCart, setUpdateCart } = useContext<CartUpdateContextType>(CartUpdateContext)
 
@@ -63,8 +63,8 @@ const MenuSection = ({ restaurante }: {
 
   return (
     <div>
-      <div className="grid grid-cols-4 mt-2">
-        <div className="hidden md:flex flex-col gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-4 mt-2">
+        <div className="flex sm:flex-col gap-2 mb-4">
           {restaurante?.menu.map((item) => (
             <Button
               key={item.id}
@@ -76,7 +76,7 @@ const MenuSection = ({ restaurante }: {
             </Button>
           ))}
         </div>
-        <div className="col-span-4 md:col-span-3 px-2 pb-8">
+        <div className="sm:col-span-3 px-2 pb-8">
           <h2 className="font-bold text-xl mb-2">{menuItemList?.category}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {menuItemList?.menuItem && menuItemList?.menuItem.map((item) => (
@@ -91,10 +91,13 @@ const MenuSection = ({ restaurante }: {
                   <h2 className="font-bold capitalize">{item.name}</h2>
                   <h2>Price: $ {item.price}</h2>
                   <h2 className="text-gray-500 text-sm line-clamp-2">{item.description}</h2>
-                  <button>
+                  {isSignedIn ? <button>
                     <SquarePlus onClick={() => addToCartHandler(item)}
                       className="hover:scale-110 duration-150" />
-                  </button>
+                  </button> :
+                    <Button variant={"outline"} asChild>
+                      <SignInButton mode="modal">Login</SignInButton>
+                    </Button>}
                 </div>
               </div>
             ))}

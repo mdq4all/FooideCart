@@ -3,10 +3,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Rating } from '@smastrom/react-rating';
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import GlobalApi from "@/app/_utils/GlobalApi";
 import { toast } from "sonner";
 import ReviewList from "./ReviewList";
+import { Divide } from "lucide-react";
 
 type ApiResponse = {
     reviews: Review[]
@@ -18,7 +19,7 @@ const ReviewsSection = ({ restaurante }: {
 
     const [rating, setRating] = useState(0)
     const [reviewText, setReviewText] = useState<string>();
-    const { user } = useUser()
+    const { user, isSignedIn } = useUser()
     const [reviews, setReviews] = useState<Review[] | null>(null)
 
     useEffect(() => {
@@ -55,21 +56,30 @@ const ReviewsSection = ({ restaurante }: {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-3 mt-10 gap-7">
-            <div className="flex flex-col p-3 border shadow-md rounded-md h-[250px]">
-                <div className="flex flex-col gap-3 mb-12">
-                    <h2 className="font-bold text-lg">Add your review</h2>
-                    <Rating style={{ maxWidth: 100 }} value={rating} onChange={setRating} />
-                    <Textarea onChange={(e) => setReviewText(e.target.value)}
-                        value={reviewText}
-                        className="resize-none"
-                    />
+            {isSignedIn ? (
+                <div className="flex flex-col p-3 border shadow-md rounded-md h-[250px]">
+                    <div className="flex flex-col gap-3 mb-12">
+                        <h2 className="font-bold text-lg">Add your review</h2>
+                        <Rating style={{ maxWidth: 100 }} value={rating} onChange={setRating} />
+                        <Textarea onChange={(e) => setReviewText(e.target.value)}
+                            value={reviewText}
+                            className="resize-none"
+                        />
+                    </div>
+                    <Button
+                        onClick={() => handleSubmit()}
+                        disabled={rating === 0 || !reviewText}>
+                        Submit
+                    </Button>
                 </div>
-                <Button
-                    onClick={() => handleSubmit()}
-                    disabled={rating === 0 || !reviewText}>
-                    Submit
-                </Button>
-            </div>
+            ) : (
+                <div className="flex flex-col justify-center">
+                    <SignInButton mode="modal">
+                        <Button variant='outline'>Login</Button>
+                    </SignInButton>
+                    <h2 className="text-primary font-bold mt-4">You must be logged in to write a review</h2>
+                </div>
+            )}
             <div className="col-span-2">
                 <ReviewList reviews={reviews} />
             </div>

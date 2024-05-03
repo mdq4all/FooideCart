@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Business } from "@/types"
 import MenuSection from "./MenuSection"
 import ReviewsSection from "./ReviewsSection"
+import AboutUs from "./AboutUs"
 
 
 const TabsComponent = ({ restaurante }: {
@@ -18,7 +19,9 @@ const TabsComponent = ({ restaurante }: {
             <TabsContent value="category">
                 <MenuSection restaurante={restaurante} />
             </TabsContent>
-            <TabsContent value="about">Change your password here.</TabsContent>
+            <TabsContent value="about">
+                <AboutUs restaurante={restaurante} />
+            </TabsContent>
             <TabsContent value="reviews">
                 <ReviewsSection restaurante={restaurante} />
             </TabsContent>
